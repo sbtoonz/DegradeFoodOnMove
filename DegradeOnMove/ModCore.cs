@@ -4,14 +4,14 @@ using BepInEx.Configuration;
 using HarmonyLib;
 using ServerSync;
 
-namespace ModFrame
+namespace DegradeOnMove
 {
     [BepInPlugin(ModGUID, ModName, ModVersion)]
-    public class NewMod : BaseUnityPlugin
+    public class DegradeOnMoveMod : BaseUnityPlugin
     {
-        private const string ModName = "New Mod";
-        private const string ModVersion = "1.0";
-        private const string ModGUID = "some.new.guid";
+        private const string ModName = "Degrade On Move";
+        private const string ModVersion = "1.0.0";
+        private const string ModGUID = "come.littleroom.dev";
         private static Harmony harmony = null!;
         ConfigSync configSync = new(ModGUID) 
             { DisplayName = ModName, CurrentVersion = ModVersion, MinimumRequiredVersion = ModVersion};
@@ -26,6 +26,8 @@ namespace ModFrame
             return configEntry;
         }
         ConfigEntry<T> config<T>(string group, string name, T value, string description, bool synchronizedSetting = true) => config(group, name, value, new ConfigDescription(description), synchronizedSetting);
+
+        internal static ConfigEntry<bool> UseMod;
         public void Awake()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -33,6 +35,8 @@ namespace ModFrame
             harmony.PatchAll(assembly);
             ServerConfigLocked = config("1 - General", "Lock Configuration", true, "If on, the configuration is locked and can be changed by server admins only.");
             configSync.AddLockingConfigEntry(ServerConfigLocked);
+
+            UseMod = config("1 - General", "Use Mod", true, "Should the mod be used");
         }
     }
 }
